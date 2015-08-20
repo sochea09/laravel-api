@@ -22,16 +22,20 @@ Route::post('/', function(){
 
     //$token  = Input::get('stripeToken'); echo $token;exit;
 
-    $customer = \Stripe\Customer::create(array(
-        'email' => Input::get("stripeEmail"),
-        'card'  => Input::get("stripeToken")
-    ));
+//    $customer = \Stripe\Customer::create(array(
+//        'email' => Input::get("stripeEmail"),
+//        'card'  => Input::get("stripeToken")
+//    ));
 
-    $charge = \Stripe\Charge::create(array(
-        'customer' => $customer->id,
-        'amount'   => 8000,
-        'currency' => 'usd'
-    ));
-
-    dd($charge);
+    try {
+        $charge = \Stripe\Charge::create(array(
+            //'customer' => $customer->id,
+            'card' => Input::get("stripeToken"),
+            'amount' => 9000,
+            'currency' => 'usd',
+            'description' => Input::get("stripeEmail"),
+        ));
+    }catch(Stripe_CardError $e){
+        dd($e);
+    }
 });
