@@ -12,5 +12,26 @@
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('stripe');
+});
+
+Route::post('/', function(){
+
+
+    \Stripe\Stripe::setApiKey(Config::get("stripe.secret_key"));
+
+    //$token  = Input::get('stripeToken'); echo $token;exit;
+
+    $customer = \Stripe\Customer::create(array(
+        'email' => Input::get("stripeEmail"),
+        'card'  => Input::get("stripeToken")
+    ));
+
+    $charge = \Stripe\Charge::create(array(
+        'customer' => $customer->id,
+        'amount'   => 8000,
+        'currency' => 'usd'
+    ));
+
+    dd($charge);
 });
